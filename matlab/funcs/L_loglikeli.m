@@ -1,7 +1,16 @@
-function [log_lik, LL_xl, LL_xu, LL_theta] = L_loglikeli(x_u, x, y, mu_n, k_n, v_n, S_n, lamda, SigMAP, muMAP, alpha, R_k)
+function [log_lik, LL_xl, LL_xu, LL_theta] = L_loglikeli(x_u, x, y, theta, R_k)
 % liklihood (for the stopping) criterion over labelled and 
 % unlabelled data
 % Code written by Lawrence Bull
+
+% store params
+mu_n = theta.mu_n;
+k_n = theta.k_n; 
+v_n = theta.v_n;
+S_n = theta.S_n;
+lamda = theta.lamda;
+SigMAP = theta.SigMAP;
+muMAP = theta.muMAP;
 
 % data properties
 d = size(x,2);
@@ -45,7 +54,7 @@ for j = 1:k
     
     ll_theta_X = [ll_theta_X, lpm_yD + lpS_D]; %#ok<AGROW>
 end
-lplam_D = logDir(lamda, R_k, alpha);
+lplam_D = logDir(lamda, R_k, theta.alpha);
 LL_theta = sum(ll_theta_X) + lplam_D;
 
 % sum up terms

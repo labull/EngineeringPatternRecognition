@@ -2,7 +2,8 @@
 % Code written by Lawrence Bull
 clearvars
 close all; clc;
-addpath('funcs')
+pth = fullfile('..','funcs');
+addpath(pth)
 
 %% load training and test data
 load('data.mat') % the simulated data from the MSSP paper
@@ -42,13 +43,13 @@ hold off;
 
 %% learn the classifier given the labelled data only
 
-[mu_n, k_n, v_n, S_n, lamda, SigMAP, muMAP] = BCMG_train(x_l, y_l);
+[theta] = BCMG_train(x_l, y_l);
 % plot the model given the supervised data *only*
 figure(2);
 s1 = gscatter(x_l(:,1),x_l(:,2),y_l,CLR,'.',10); hold on; % labelled data
 % plot the ellipses
 for i = 1:k
-    plot_clusters(muMAP(i,:), SigMAP(:,:,i))
+    plot_clusters(theta.muMAP(i,:), theta.SigMAP(:,:,i))
 end
 plot_clusters2([0,0], eye(2)) % plot the prior
 hold off;
@@ -60,15 +61,14 @@ title('supervised GMM')
 hold off;
 
 % predict
-[y_pred] = BCMG_predict(x_test, mu_n, k_n, v_n, S_n, lamda);
+[y_pred] = BCMG_predict(x_test, theta);
 % accuracy
 acc1 = sum(y_pred == y_test)/size(y_test,1);
 fprintf('supervised accuracy: %.2f\n', acc1)
 
 %% update GMM using the unlabelled data
 
-[mu_nu, k_nu, v_nu, S_nu, lamda_u, Sig_MAP, mu_MAP, log_lik] = ...
-    GMM_EMupdate(x_u, x_l, y_l, mu_n, k_n, v_n, S_n, lamda, SigMAP, muMAP);
+[theta, log_lik] = GMM_EMupdate(x_u, x_l, y_l, theta);
 %
 figure(3) % check the log-likelihood increased during training
 scatter(1:length(log_lik), log_lik,'.')
@@ -81,9 +81,8 @@ su=scatter(x_u(:,1),x_u(:,2),20,'k.'); hold on;  % unlabelled data
 sl=gscatter(x_l(:,1),x_l(:,2),y_l,CLR,'.',10); hold on; % labelled data
 su.MarkerEdgeAlpha = 0.5;
 % plot the ellipses
-theta = 0:0.1:2*pi;
 for i = 1:k
-    plot_clusters(mu_MAP(i,:), Sig_MAP(:,:,i))
+    plot_clusters(theta.muMAP(i,:), theta.SigMAP(:,:,i))
 end
 plot_clusters2([0,0], eye(2)) % plot the prior
 hold off;
@@ -95,7 +94,7 @@ title('semi-supervised GMM')
 hold off;
 
 % predict
-[y_pred] = BCMG_predict(x_test, mu_nu, k_nu, v_nu, S_nu, lamda_u);
+[y_pred, py_xD] = BCMG_predict(x_test, theta);
 % accuracy
 acc2 = sum(y_pred == y_test)/size(y_test,1);
 fprintf('semi-supervised accuracy: %.2f\n', acc2)

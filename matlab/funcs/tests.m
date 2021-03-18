@@ -29,12 +29,12 @@ for b = 1:floor(N/B)-2
     x_u = (x_u - loc)./(sdev); %#ok<NASGU>
     x_test = (x_test - loc)./(sdev);
     % TRAIN parameters classification model
-    [mu_n, k_n, v_n, S_n, lamda, ~, ~] = BCMG_train(x, y);
+    [theta] = BCMG_train(x, y);
     % SELECT DATA TO SAMPLE
     % random sample 
     q_idx = size(D_u, 1) - randperm(B, qn) + 1; % from the new batch
     % PREDICT test set using the current model
-    y_pt = BCMG_predict(x_test, mu_n, k_n, v_n, S_n, lamda);
+    y_pt = BCMG_predict(x_test, theta);
     % f1score metric
     f1rs = [f1rs, fscore_macro(y_pt, y_test(:,1))]; %#ok<AGROW>  
     % UPDATE TRAINING SET
@@ -65,13 +65,13 @@ for b = 1:floor(N/B)-2
     x_u = (x_u - loc)./(sdev);
     x_test = (x_test - loc)./(sdev);
     % TRAIN parameters classification model
-    [mu_n, k_n, v_n, S_n, lamda, ~, ~] = BCMG_train(x, y);
+    [theta] = BCMG_train(x, y);
     % PREDICT UNLABELLED DATA
-    [~, py_xD, ~, ~, px_D] = BCMG_predict(x_u, mu_n, k_n, v_n, S_n, lamda);
+    [~, py_xD, ~, ~, px_D] = BCMG_predict(x_u, theta);
     % DEFINE UNCERTAIN POINTS
     [q_idx] = uncertain_sample(py_xD, px_D, x_u, B, qn);
     % PREDICT test set
-    y_pt = BCMG_predict(x_test, mu_n, k_n, v_n, S_n, lamda);
+    y_pt = BCMG_predict(x_test, theta);
     % f1score metric
     f1al = [f1al, fscore_macro(y_pt, y_test(:,1))]; %#ok<AGROW>
     % UPDATE TRAINING SET

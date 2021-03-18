@@ -1,4 +1,4 @@
-function [mu_n, k_n, v_n, S_n, lamda, SigMAP, muMAP] = BCMG_train(x, y)
+function [theta] = BCMG_train(x, y)
 % Learn the distribution for a Bayesian mixture of Gaussian components
 % Code written by Lawrence Bull
 
@@ -56,6 +56,17 @@ for i = 1:k
     SigMAP(:,:,i) = S_n(:,:,i)/(v_n(i) + d + 1);
     muMAP(i,:) = mu_n(i,:);
 end
+
+% store params
+theta.alpha = alpha;
+theta.mu_n = mu_n;
+theta.k_n = k_n; 
+theta.v_n = v_n;
+theta.S_n = S_n;
+theta.lamda = lamda;
+theta.SigMAP = SigMAP;
+theta.muMAP = muMAP;
+
 end
 
 

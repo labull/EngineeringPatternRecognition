@@ -1,6 +1,7 @@
 %% GMM active learning demo
 clearvars; close all; clc;
-addpath('funcs')
+pth = fullfile('..','funcs');
+addpath(pth)
 
 % load the demo data
 load('demo_data.mat');
@@ -21,8 +22,8 @@ x = D_l(:,1:end-1); y = D_l(:,end); % observations and labels
 x_u = D_u(:,1:end-1); % unlabelled data
 
 % train / predict GMM
-[mu_n, k_n, v_n, S_n, lamda, SigMAP, muMAP] = BCMG_train(x, y);
-[y_pred, py_xD, px_yD, py_D, px_D] = BCMG_predict(x_u, mu_n, k_n, v_n, S_n, lamda);
+[theta] = BCMG_train(x, y);
+[y_pred, py_xD, px_yD, py_D, px_D] = BCMG_predict(x_u, theta);
 
 % select uncertain data given the current model
 [q_idx] = uncertain_sample(py_xD, px_D, x_u, size(x_u,1), 50);
@@ -31,7 +32,7 @@ f2 = figure(2);colormap('jet');
 scatter(x(:,1), x(:,2), 50, y, '.'); % labelled data
 hold on
 scatter(x_u(:,1), x_u(:,2),50,'k.') % unlabelled data
-plot_clusters(muMAP, SigMAP)
+plot_clusters(theta.muMAP, theta.SigMAP)
 % uncertain queries
 scatter(x_u(q_idx,1), x_u(q_idx,2), 20, 'ro', 'LineWidth', 2); hold off;
 
@@ -59,8 +60,8 @@ for i = 1:rep
     D_test = D(test_idx, :);   
     % tests
     [rs, al] = tests(D_av, D_test, B, qn);
-    f1rs = [f1rs; rs];
-    f1al = [f1al; al];
+    f1rs = [f1rs; rs]; %#ok<AGROW>
+    f1al = [f1al; al]; %#ok<AGROW>
     disp(i)
 end
 

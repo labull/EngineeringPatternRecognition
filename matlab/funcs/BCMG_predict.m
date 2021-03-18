@@ -1,6 +1,13 @@
-function [y_pred, py_xD, px_yD, py_D, px_D] = BCMG_predict(xtest, mu_n, k_n, v_n, S_n, lamda)
+function [y_pred, py_xD, px_yD, py_D, lpx_D] = BCMG_predict(xtest, theta)
 % Bayes classification
 % Code written by Lawrence Bull
+
+% store params
+mu_n = theta.mu_n;
+k_n = theta.k_n; 
+v_n = theta.v_n;
+S_n = theta.S_n;
+lamda = theta.lamda;
 
 % data properties
 k = size(mu_n,1);
@@ -19,21 +26,15 @@ end
 % POSTERIOR PREDICTIVE 'PRIOR': p(y | D)
 py_D = lamda;
 
+% log sum exp-trick
+b_c = lpx_yD + repmat(log(py_D), size(lpx_yD, 1), 1);
 % PREDICTIVE CLASSIFIER
-% p_yxD_ = zeros(size(xtest,1), k);
-lpy_xD = zeros(size(xtest,1), k); % log posterior
-for i = 1:size(xtest,1)
-    % log sum exp-trick
-    b_c = lpx_yD(i,:) + log(py_D);
-    lpy_xD(i, :) = b_c - log(sum(exp(b_c - max(b_c)))) - max(b_c);
-end
+lpx_D = log(sum(exp(b_c - max(b_c, [], 2)), 2)) + max(b_c, [], 2);
+% POSTERIOR PREDICTIVE OF THE MODEL: p(x* | D)
+lpy_xD = b_c - lpx_D;
+
+% MAP label
 [~, y_pred] = max(lpy_xD,[],2);
 py_xD = exp(lpy_xD);
-
-% POSTERIOR PREDICTIVE OF THE MODEL: p(x* | D)
-px_D = NaN(size(xtest,1),1);
-for i = 1:size(xtest,1)
-    px_D(i, :) = sum(px_yD(i,:).*py_D);
-end
 
 end
