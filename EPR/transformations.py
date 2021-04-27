@@ -6,15 +6,15 @@ class TCA:
     def __init__(self, source_data, target_data, kernel):
         Xs = source_data
         Xt = target_data
-        X = np.row_stack((Xs, Xt)) # data from each domain combined
+        self.X = np.row_stack((Xs, Xt)) # data from each domain combined
         
         # normalise
         self.kernel = kernel
-        self.K = kernel(X, X) # combined data through kernel
+        self.K = kernel(self.X, self.X) # combined data through kernel
         self.ns = Xs.shape[0] # number of source data
         self.nt = Xt.shape[0] # number of target data
         self.n = self.ns + self.nt # no. points combined
-        self.d = X.shape[1] # dimensionality
+        self.d = self.X.shape[1] # dimensionality
         self.L = np.ones((self.n, self.n)) * -1 / (self.ns*self.nt) 
         self.L[:self.ns, :self.ns] = 1 / self.ns**2
         self.L[self.ns:, self.ns:] = 1 /  self.nt**2
@@ -42,7 +42,7 @@ class TCA:
         self.Zt = self.Z[self.ns:, :] # target part
         
         
-    def out_of_sample(self, source_test_data, target_test_data):
+    def test(self, source_test_data, target_test_data):
         Xs_test = source_test_data
         Xt_test = target_test_data
         self.X_test = np.row_stack((Xs_test, Xt_test))
