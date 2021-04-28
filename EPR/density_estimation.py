@@ -41,7 +41,7 @@ class student_t:
 class NIW:
     # normal-inverse-wishart
     def __init__(self, prior):
-        # init prior
+        # set prior
         self.m0 = prior.m0
         self.k0 = prior.k0
         self.S0 = prior.S0
@@ -49,6 +49,11 @@ class NIW:
         #
         self.D = prior.S0.shape[0] # dimensions
         self.N = 0 # number of observations
+        # init post. params
+        self.mn = self.m0
+        self.kn = self.k0
+        self.Sn = self.S0
+        self.vn = self.v0
         
     def train(self, X):
         # update given data X
@@ -83,14 +88,10 @@ class NIW:
         self.mu_map = self.mn
         self.Sig_map = self.Sn / (self.vn + self.D + 2)
         
-    def post_init(self, m):
-        # init poster with (offset) priors (to init EM)
+    def post_init(self, m = None):
+        # init poster with (offset) priors (e.g. to init EM)
         # center offset
-        self.mn = m 
-        # init post. params from prior
-        self.kn = self.k0
-        self.Sn = self.S0
-        self.vn = self.v0
+        self.mn = m
         
     def post_logpdf(self, mu, Sig):
         # define log-pdf of posterior joint w scipy
