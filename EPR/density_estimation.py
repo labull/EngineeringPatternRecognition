@@ -88,8 +88,8 @@ class NIW:
         self.mu_map = self.mn
         self.Sig_map = self.Sn / (self.vn + self.D + 2)
         
-    def post_init(self, m = None):
-        # init poster with (offset) priors (e.g. to init EM)
+    def post_init(self, m):
+        # init post with (offset) priors (e.g. to init EM)
         # center offset
         self.mn = m
         
