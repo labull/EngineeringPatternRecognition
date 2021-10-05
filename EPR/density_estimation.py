@@ -108,7 +108,7 @@ class NIW:
         for i in range(n):
             Sig[i] = invwishart(self.vn, self.Sn).rvs(1)
             mu[i, :] = multivariate_normal(self.mn, Sig[i]/self.kn).rvs(1)
-        return mu, Sig
+        return mu, np.stack(Sig)
         
     def predict(self, Xt):
         # posterior-predictive given data Xt
