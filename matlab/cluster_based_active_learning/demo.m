@@ -46,9 +46,9 @@ figure(2)
 % ground truth labels
 scatter(x_train(:,1),x_train(:,2),100,y,'.','DisplayName','target labels');
 hold on;
-% DH propogated labels
+% DH propagated labels
 scatter(x_train(:,1),x_train(:,2),60,y_train,'o', ...
-    'DisplayName','propogated labels');
+    'DisplayName','propagated labels');
 % active queries
 scatter(Z(:,1),Z(:,2),40,'kx','DisplayName','active queries');
 colormap('jet'); colorbar;

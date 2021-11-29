@@ -8,26 +8,27 @@
 Active learning is motivated by scenarios where providing labels `Y` for all the measured (input) data `X` is infeasible/impractical. The key philosophy is that an algorithm can provide a more accurate mapping from observations in `X` to labels in `Y` if it can select the data from which it learns. In other words, limited to a budget of `n` observations, active algorithms systematically build a training set (`x_train`, `y_train`) in an intelligent and adaptive manner.
 
 ## The DH active learning algorithm
-Dasgupta's and Hsu's (DH) cluster-adaptive heuristic starts with a hierarchical clustering of the unlabelled data `X`, which divides the feature-space into many partitions. An informative training set is built by directing queries from the hidden labels in `Y` to areas of the feature-space that appear mixed (in terms of labels), while clusters that appear homogeneous are queried less. When appropriate, queried labels can be propagated to any remaining unlabelled instances, using the cluster structure and a majority vote; this process typically associated with semi-supervised learning. A standard supervised classifier can then be learnt from the resulting labelled dataset `xl`. For further information on the algorithm, refer to the [original paper](http://icml2008.cs.helsinki.fi/papers/324.pdf) and [application paper](https://www.sciencedirect.com/science/article/pii/S0022460X18305479?via%3Dihub).
+Dasgupta's and Hsu's (DH) cluster-adaptive heuristic starts with a hierarchical clustering of the unlabelled data `X`, which divides the feature-space into many partitions. An informative training set is built by directing queries from the hidden labels in `Y` to areas of the feature-space that appear mixed (in terms of labels), while clusters that appear homogeneous are queried less. When appropriate, queried labels can be propagated to any remaining unlabelled instances, using the cluster structure and a majority vote; this process typically associated with semi-supervised learning. A standard supervised classifier can then be learnt from the resulting labelled dataset `xl`.
 
 ## Examples
 A toy dataset is provided with a demo script.
 
 ![](images/fig1.png?raw=true)
 
-The data groups are intentionally mixed, with some more separated groups, to present a challenging classification problem.
+The data groups are intentionally mixed, with some more separated groups.
 
 ### Demo 1: single test
-Import the data and define the training and test sets.
+Import the data to define the training and test sets.
 ```
-load('8dof_6class.mat');
+pth = fullfile('..','funcs','data.mat');
+load(pth);
 ```
 
 **Cluster** the unlabelled input data `X`.
 ```
 [u, ch] = h_cluster(X);
 ```
-`h_cluster` uses the stock MATLAB function `linkage` to build a hierarchical clustering of the input data. Outputs are the clustered data `u` (indexed) for all nodes in the hierarchy, and the list of child nodes `ch` associated with each cluster. For further details, see this [paper](https://www.sciencedirect.com/science/article/pii/S0022460X18305479?via%3Dihub). 
+`h_cluster` uses the MATLAB function `linkage` to build a hierarchical clustering of the input data. Outputs are the clustered data `u` (indexed) for all nodes in the hierarchy, and the list of child nodes `ch` associated with each cluster. For further details, see this [paper](https://www.sciencedirect.com/science/article/pii/S0022460X18305479?via%3Dihub). 
 
 *Note*: if the dataset is large, consider limiting the maximum number of clusters for efficiency. See Demo 2 for an example.
 
@@ -41,7 +42,7 @@ t = n/3; % number of runs
 % run the DH learner
 [xl, z] = DH_AL(u, ch, B, t, Y);
 ```
-Plot the labelled training set `xl`, including direct queries `z` (crossed) and propagated labels (circles). Notice how queries can be directed towards mixed areas of the feature space, and how the propagated labels (circles) provided by the DH learner are similar to the true dataset (dots).
+Plot the labelled training set `xl`, including direct queries `z` (crossed) and propagated labels (circles). Notice how queries can be directed towards mixed areas of the feature space, and how the propagated labels (circles) provided by the DH learner are similar to the ground-truth labels (dots).
 
 ![](images/fig2.png?raw=true)
 
@@ -76,7 +77,7 @@ The procedure for Demo 1 is now applied while increasing the label budget `n`. T
 
 ![](images/fig3.png?raw=true)
 
-This demo takes a while to run, due to test repeats. To speed things up the maximum number of clusters is limited to 100 using `h_cluster`.
+This demo takes a while to run, due to test repeats. To speed things up the number of clusters is limited to 100 using `h_cluster`.
 ```
 [u, ch] = h_cluster(X, 'max_clusters', 100);
 ```
