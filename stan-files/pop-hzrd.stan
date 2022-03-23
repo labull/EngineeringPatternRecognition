@@ -62,30 +62,27 @@ model {
         yhat[i] = Phi[i, 1] * intercepts[c[i]] + Phi[i, 2] * slopes[c[i]]
             + dot_product(Psi[i], beta);
     }
-
     
     y ~ normal(yhat, sigma);
 }
 
-generated quantities {
-    // TODO: fix this
-    
+generated quantities {   
     // sample to visualise
-    // matrix[Nxx, K] yhat_xx;
-    // for(k in 1:K) {
-    //     for(i in 1:Nxx) {
-    //         yhat_xx[k, i] = Phi_xx[i, 1]*intercepts[k] 
-    //             + Phi_xx[i, 2]*slopes[k] + dot_product(Psi_xx[i], beta);
-    //     }
-    // }
-    // posterior predictive likelihood
-    // vector[Nt] yhat_test;
-    // vector[Nt] lpy_test;
-    // for(i in 1:Nt) {
-    //     yhat_test[i] = Phi_test[i, 1]*intercepts[c_test[i]] 
-    //         + Phi_test[i, 2]*slopes[c_test[i]]
-    //         + dot_product(Psi_test[i], beta);
+    matrix[Nxx, K] yhat_xx;
+    for(k in 1:K) {
+        for(i in 1:Nxx) {
+            yhat_xx[i, k] = Phi_xx[i, 1]*intercepts[k] + Phi_xx[i, 2]*slopes[k] 
+                + dot_product(Psi_xx[i], beta);   
+        }
+    }
 
-    //     lpy_test[i] = normal_lpdf(y_test[i] | yhat_test[i], sigma);   
-    // }
+    // posterior predictive likelihood
+    vector[Nt] yhat_test;
+    vector[Nt] lpy_test;
+    for(i in 1:Nt) {
+        yhat_test[i] = Phi_test[i, 1]*intercepts[c_test[i]] 
+            + Phi_test[i, 2]*slopes[c_test[i]] 
+            + dot_product(Psi_test[i], beta);
+        lpy_test[i] = normal_lpdf(y_test[i] | yhat_test[i], sigma);
+    }
 }

@@ -65,7 +65,6 @@ model {
 generated quantities {
     // sample to visualise
     vector[Nxx] yhat_xx;
-    vector[Nxx] y_xx;
     for(i in 1:Nxx) {
         yhat_xx[i] = Phi_xx[i, 1]*intercept + Phi_xx[i, 2]*slope 
             + dot_product(Psi_xx[i], beta);   
