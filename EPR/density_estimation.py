@@ -2,6 +2,7 @@ import numpy as np
 from scipy.special import gammaln, digamma
 from scipy.stats import invwishart, multivariate_normal, dirichlet
 
+
 class student_t:
     # multi-variate student-t 
     def __init__(self, loc, scale, df):
@@ -282,4 +283,21 @@ class mixture:
         # for Xu
         self.r_ul = ru
         self.lpx_ul = self.lpx
-        
+
+
+class Gompertz:
+    # Gompertz survival model
+    def __init__(self, gamma, psi):
+        self.gamma = gamma
+        self.phi = psi
+
+    def pdf(self, t):
+        # probability density function
+        pdf = (self.gamma * np.exp(self.phi * t)
+               * np.exp(-self.gamma/self.phi * (np.exp(self.phi*t) - 1)))
+        return pdf
+
+    def hazard(self, t):
+        # hazard function (linear)
+        return np.log(self.gamma) + self.phi*t
+

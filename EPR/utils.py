@@ -1,5 +1,41 @@
 import numpy as np
 
+
+def bspline(x, xh, delt):
+    # knots
+    xh1 = xh + 1 * delt
+    xh2 = xh + 2 * delt
+    xh3 = xh + 3 * delt
+    xh4 = xh + 4 * delt
+    bs = []
+    for xx in x:
+        if xh <= xx < xh1:
+            u = (xx - xh) / delt
+            bh = 1 / 6 * u ** 3
+        elif xh1 <= xx < xh2:
+            u = (xx - xh1) / delt
+            bh = 1 / 6 * (1 + 3 * u + 3 * u ** 2 - 3 * u ** 3)
+        elif xh2 <= xx < xh3:
+            u = (xx - xh2) / delt
+            bh = 1 / 6 * (4 - 6 * u ** 2 + 3 * u ** 3)
+        elif xh3 <= xx < xh4:
+            u = (xx - xh3) / delt
+            bh = 1 / 6 * (1 - 3 * u + 3 * u ** 2 - u ** 3)
+        else:
+            bh = 0
+        bs.append(bh)
+    return np.array(bs)
+
+
+def uniBspline(xx, H):
+    # list of uniform B-splines over range xx
+    delta = (xx.max() - xx.min()) / (H - 1)
+    xhh = np.arange(xx.min() - (delta * 2), xx.max(), delta)[:-1]
+    # functions
+    splines = [lambda x, xh=xh: bspline(x, xh, delta) for xh in xhh]
+    return splines
+
+
 class ellipse:
     # points around 2d covariance ellipse
     def __init__(self, mu, cov, points=500, MSD_th=None):

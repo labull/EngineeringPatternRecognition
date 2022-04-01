@@ -38,6 +38,7 @@ parameters {
     // parent nodes (hyperpriors)
     vector[2] mu_alpha;
     vector<lower=0>[2] sigma_alpha;
+    vector<lower=0>[H] sigma_beta;
 }
 
 model {
@@ -45,12 +46,13 @@ model {
     
     // hyperpriors
     mu_alpha ~ normal([0, 1.5], [2, .5]);
-    sigma_alpha ~ inv_gamma(1, 1);  
+    sigma_alpha ~ inv_gamma(1, 1);
+    square(sigma_beta) ~ inv_gamma(5e-3, 5e-3);
     
     // priors
     intercept ~ normal(mu_alpha[1], sigma_alpha[1]);
     slope ~ normal(mu_alpha[2], sigma_alpha[2]);
-    beta ~ cauchy(0, .1); // sparse
+    beta ~ normal(rep_vector(0, H), sigma_beta); // sparse
     sigma ~ inv_gamma(3, 0.8);
 
     // likelihood
