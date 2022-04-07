@@ -116,7 +116,7 @@ class NIW:
         m = self.mn
         S = (self.kn + 1)/(self.kn*(self.vn - self.D + 1)) * self.Sn
         nu = self.vn - self.D + 1
-        self.post_pred = student_t(m, S, nu) # save post. pred. object
+        self.post_pred = student_t(m, S, nu)    # save post. pred. object
         lp = self.post_pred.logpdf(Xt)
         return lp
     
@@ -130,7 +130,7 @@ class NIW:
             m = self.mn
             S = (self.kn + 1)/(self.kn*(self.vn - self.D + 1)) * self.Sn
             nu = self.vn - self.D + 1
-            post_pred = student_t(m, S, nu) # save post. pred. object
+            post_pred = student_t(m, S, nu)     # save post. pred. object
             samps = post_pred.rvs(n)     
         return samps 
 
@@ -163,7 +163,7 @@ class mixture:
             # dirichlet
             nk = sum(Y==self.labels[k])
             self.pi_map[k] = ((nk + self.alpha[k] - 1) 
-                              /(self.N + np.sum(self.alpha) - self.K))
+                              / (self.N + np.sum(self.alpha) - self.K))
             # post. alpha            
             self.alpha_n[k] = nk + self.alpha[k]
         # store supervised 'responsibility' (diracs)
@@ -180,9 +180,9 @@ class mixture:
         self.lpx_y = np.column_stack(lp) # likelihood of classifier
         # posterior predictive of classifier
         # log-sum-exp
-        bc = self.lpx_y + np.log(self.pi_map) # px|y*py
+        bc = self.lpx_y + np.log(self.pi_map)       # px|y*py
         self.lpx = np.array([np.log(np.sum(np.exp(b_c - np.max(b_c))))
-                             + np.max(b_c) for b_c in bc]) # px
+                             + np.max(b_c) for b_c in bc])  # px
         # py|x = (px|y * py) / px
         lpy_x = np.array([bc[i,:] - self.lpx[i] for i in range(bc.shape[0])]) 
         # unlog
@@ -205,13 +205,13 @@ class mixture:
         while (np.size(self.lml) < 5 or 
                abs(sum(self.lml[-1] - self.lml[-5:-1])) > tol):
             # M-step
-            for k in range(self.K): # update for each class
+            for k in range(self.K):     # update for each class
                 # clusters
-                self.base[k].M_step(X, r[:, k]) # update posterior params.
+                self.base[k].M_step(X, r[:, k])     # update posterior params.
                 # dirichlet
-                nk = np.sum(r[:,k])
+                nk = np.sum(r[:, k])
                 self.pi_map[k] = ((nk + self.alpha[k] - 1) 
-                                  /(self.N + np.sum(self.alpha) - self.K))
+                                  / (self.N + np.sum(self.alpha) - self.K))
                 
             # E-step
             r = self.predict(X) # update responsibility
@@ -237,30 +237,30 @@ class mixture:
         # stack labelled + unlabelled inputs
         X = np.row_stack([Xl, Xu])
         Yl = np.squeeze(Yl)       
-        # init model (post) with labelled datatset
+        # init model (post) with labelled dataset
         self.train_supervised(Xl, Yl)
-        self.N = X.shape[0] # ovrwrt n labelled from train_supervised      
-        # init responsility
+        self.N = X.shape[0]     # ovrwrt n labelled from train_supervised
+        # init responsibility
         rl = self.r
-        ru = self.predict(Xu) # unlabelled data    
+        ru = self.predict(Xu)   # unlabelled data
         r = np.row_stack([rl, ru])
         
-        self.ll = [] # joint-log-likelihood
+        self.ll = []            # joint-log-likelihood
         
         # EM iterations
         while (np.size(self.ll) < 5 or 
                abs(sum(self.ll[-1] - self.ll[-5:-1])) > tol):
             # M-step
-            for k in range(self.K): # update for each class
+            for k in range(self.K):     # update for each class
                 # clusters
-                self.base[k].M_step(X, r[:, k]) # update posterior params.
+                self.base[k].M_step(X, r[:, k])     # update posterior params
                 # dirichlet
                 nk = np.sum(r[:,k])
                 self.pi_map[k] = ((nk + self.alpha[k] - 1) 
                                   /(self.N + np.sum(self.alpha) - self.K))
                 
             # E-step
-            ru = self.predict(Xu) # update resp. for unlabelled
+            ru = self.predict(Xu)           # update resp. for unlabelled
             r = np.row_stack([rl, ru])
             
             # log-lik unlabelled
@@ -270,7 +270,7 @@ class mixture:
                                                         self.base[k].Sig_map)
                                for k in range(self.K)]).sum()
             # mixing props
-            self.alpha_n = np.sum(r, 0) + self.alpha # posterior alpha
+            self.alpha_n = np.sum(r, 0) + self.alpha    # posterior alpha
             lpi_D = dirichlet.logpdf(self.pi_map, self.alpha_n)
             
             # track log-lik of the joint of the model
@@ -279,7 +279,7 @@ class mixture:
             print('log-joint-likelihood:' + '%.4f' % self.ll[-1])       
         
         # store the final responsibility and likelihood 
-        self.r # resp. for whole semisupervised set
+        self.r      # resp. for whole semisupervised set
         # for Xu
         self.r_ul = ru
         self.lpx_ul = self.lpx
