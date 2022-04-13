@@ -92,6 +92,7 @@ class DAGMM:
         # row variance (output) as the average of the sGMM conditionals
         self.V = np.mean(self.Vs, 0)
         self.H = None   # projected target data
+        self.Z = None   # predicted labels
 
     def train(self, Phi, itt=10):
         # target data (Phi(Xt))
@@ -107,8 +108,12 @@ class DAGMM:
         # row variance
         Kcov = prior.gamma * Phi.T @ Phi
         L_K = np.linalg.cholesky(Kcov)
-        LK_inv = np.linalg.inv(L_K)
+        LK_inv = np.linalg.inv(L_K).T
         Kinv = LK_inv.T @ LK_inv
+
+        # paul's
+        RK = np.linalg.cholesky(Kcov).T
+
         # Kinv, L_k, = chinv(Kcov)
 
         # init A matrix
@@ -135,7 +140,7 @@ class DAGMM:
             ln_r = (lnRho.T - np.log(np.sum(np.exp(lnRho.T - lnRho.max(1)), 0))
                     - lnRho.max(1)).T
             res = np.exp(ln_r)  # responsibilities
-            res = resp_gt
+            # res = resp_gt
 
             Nk = res.sum(0)
 
@@ -150,27 +155,20 @@ class DAGMM:
                 S[k] = (res[:, k][:, np.newaxis] * Phi).T @ Phi
 
             S = sum(S)
+            # TODO: make the prior a general M (rather than ones)
             Syx = sum(Syx) + np.ones((D, p)) @ Kcov
             Sxx = S + Kcov
 
+            self.A = Syx @ chinv(Sxx)
+            # R = np.linalg.cholesky(Sxx).T
+            # self.A = np.linalg.solve(R, np.linalg.solve(R.T, Syx.T)).T
 
-            # Sxx_k = [[]] * self.K
-            # Syx_k = [[]] * self.K
-            # # Syy = [[]] * self.K
-            # for k in range(self.K):
-            #     Sxx_k[k] = ((res[:, k][:, np.newaxis] * Phi).T @ Phi
-            #                 + 1/self.K * Kcov)
-            #     # TODO: make the prior a general M (rather than ones)
-            #     Syx_k[k] = np.outer(self.mu[k], res[:, k][:, np.newaxis].T @
-            #                         Phi)# + np.ones((D, p)) @ (1/self.K * Kcov)
-            #     # Syy[k]
-            # Sxx = sum(Sxx_k)
-            # Syx = sum(Syx_k)
-
-            self.A = Syx @ chinv(Sxx + np.eye(p)*1e-6)
-            # self.A = Ahat
+            self.A = Ahat
 
             self.H = Phi @ self.A.T
+
+
+        self.Z = resp
 
 ##
 
@@ -204,4 +202,6 @@ plt.tight_layout()
 plt.show(block=False)
 plt.close()
 
+
 ##
+
