@@ -24,13 +24,17 @@ S[3] = np.array([[1, 0.6], [0.6, 1]])
 
 Xs = np.row_stack([np.random.multivariate_normal(m[k], S[k], Ns)
                    for k in range(K)])
+# Xt = np.row_stack([np.random.multivariate_normal(m[k], S[k], Nt)
+#                    for k in range(K)])
 Xt = np.row_stack([np.random.multivariate_normal(m[k], S[k], Nt)
-                   for k in range(K)])
+                   for k in range(K-1)])  # one less class in target
 
 Ys = np.concatenate([(k + 1) * np.ones(Ns) for k in range(K)]).astype('int')
-Yt = np.concatenate([(k + 1) * np.ones(Nt) for k in range(K)]).astype('int')
+# Yt = np.concatenate([(k + 1) * np.ones(Nt) for k in range(K)]).astype('int')
+# one less class in target
+Yt = np.concatenate([(k + 1) * np.ones(Nt) for k in range(K-1)]).astype('int')
 
-theta = 20 * (2 * np.pi / 180)
+theta = 25 * (2 * np.pi / 180)
 Ahat = np.array([[np.cos(theta), -np.sin(theta)],
                  [np.sin(theta), np.cos(theta)]])
 Xt = Xt @ Ahat
@@ -58,8 +62,8 @@ gmm_prior.alpha = 10
 
 # mixture
 sGMM = mixture(K, NIW, gmm_prior)
-# sGMM.train_supervised(Xs, Ys)
-sGMM.EM(Xs)
+sGMM.train_supervised(Xs, Ys)
+# sGMM.EM(Xs)       # LABEL SWITCHING ISSUES IF SEMI SUPERVISED DA
 
 plt.figure(figsize=[5, 5])
 for k in range(K):
@@ -96,7 +100,6 @@ class DAGMM:
 
     def train(self, Phi, itt=10):
         # target data (Phi(Xt))
-        Phi = Phi
         N, p = Phi.shape  # dims from the kernel
         D = sGMM.base[0].Sig_map.shape[0]  # dims of the source domain
 
@@ -108,11 +111,8 @@ class DAGMM:
         # row variance
         Kcov = prior.gamma * Phi.T @ Phi
         L_K = np.linalg.cholesky(Kcov)
-        LK_inv = np.linalg.inv(L_K).T
+        LK_inv = np.linalg.inv(L_K)
         Kinv = LK_inv.T @ LK_inv
-
-        # paul's
-        RK = np.linalg.cholesky(Kcov).T
 
         # Kinv, L_k, = chinv(Kcov)
 
@@ -120,16 +120,32 @@ class DAGMM:
         # (one) sample from prior option
         Acol = mvn.rvs(np.ones(D * p), np.kron(Kinv, self.V))
         self.A = Acol.reshape(D, p, order='F')
+        # # near the ground truth
+        # self.A = Ahat + np.random.normal(size=Ahat.shape)*.1
 
         for _ in range(itt):
+
+            fig = plt.figure(figsize=[5, 5])
+            self.H = Phi @ self.A.T
+            for k in range(K):
+                e = ellipse(sGMM.base[k].mu_map, sGMM.base[k].Sig_map).cov_3
+                plt.plot(e[2][:, 0], e[2][:, 1], 'k', lw=.8)  # map cluster
+                plt.scatter(Xs[Ys == k + 1, 0], Xs[Ys == k + 1, 1],
+                            color='k', s=0.5, alpha=0.1)
+                plt.scatter(dagmm.H[Yt == k + 1, 0], dagmm.H[Yt == k + 1, 1],
+                            color=cmap(k), zorder=0)
+            plt.tight_layout()
+            plt.show(block=False)
+            plt.close()
+
             # expectation of quadratic form wrt A
             Qk = np.linalg.solve(L_K, Phi.T)
             phi_Kinv_phi = np.sum(Qk * Qk, 0)
             E_A = [[]] * K
             for k in range(K):
-                Q = self.L_lam[k] @ (Phi @ self.A.T - self.mu[k]).T
+                Q = self.L_lam[k].T @ (Phi @ self.A.T - self.mu[k]).T
                 E_A[k] = (phi_Kinv_phi * np.trace(self.V @ self.lam[k].T)
-                          + sum(Q * Q))
+                          + np.sum(Q * Q, 0))
 
             # expectation of log(pi) wrt dirichlet
             E_lnPi = digamma(self.alpha) - digamma(self.alpha.sum())
@@ -160,21 +176,17 @@ class DAGMM:
             Sxx = S + Kcov
 
             self.A = Syx @ chinv(Sxx)
-            # R = np.linalg.cholesky(Sxx).T
-            # self.A = np.linalg.solve(R, np.linalg.solve(R.T, Syx.T)).T
-
-            self.A = Ahat
+            L_K = np.linalg.cholesky(Sxx)   # update L_k for E_A
 
             self.H = Phi @ self.A.T
-
 
         self.Z = resp
 
 ##
 
 prior = struct()
-prior.alpha = 10
-prior.gamma = 1e-2
+prior.alpha = 1
+prior.gamma = 1e-3
 
 # design matrix
 Phi = np.column_stack([Xt])
@@ -188,20 +200,10 @@ for ii, resp in enumerate(resp_gt):
 
 ##
 
-dagmm.train(Phi, 1)
-fig = plt.figure(figsize=[5, 5])
+dagmm.train(Phi, 3)
 
-for k in range(K):
-    e = ellipse(sGMM.base[k].mu_map, sGMM.base[k].Sig_map).cov_3
-    plt.plot(e[2][:, 0], e[2][:, 1], 'k', lw=.8)  # map cluster
-    plt.scatter(Xs[Ys == k + 1, 0], Xs[Ys == k + 1, 1],
-                color='k', s=0.5, alpha=0.1)
-    plt.scatter(dagmm.H[Yt == k + 1, 0], dagmm.H[Yt == k + 1, 1],
-                color=cmap(k), zorder=0)
-plt.tight_layout()
-plt.show(block=False)
-plt.close()
-
+print(Ahat)
+print(dagmm.A)
 
 ##
 
