@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.cm import get_cmap
 from scipy.stats import multinomial
+from sklearn.model_selection import train_test_split
 from scipy.stats import multivariate_normal as mvn
 from scipy.special import digamma
 #
@@ -34,7 +35,7 @@ Ys = np.concatenate([(k + 1) * np.ones(Ns) for k in range(K)]).astype('int')
 # one less class in target
 Yt = np.concatenate([(k + 1) * np.ones(Nt) for k in range(K-1)]).astype('int')
 
-theta = 25 * (2 * np.pi / 180)
+theta = 40 * (2 * np.pi / 180)
 Ahat = np.array([[np.cos(theta), -np.sin(theta)],
                  [np.sin(theta), np.cos(theta)]])
 Xt = Xt @ Ahat
@@ -98,12 +99,20 @@ class DAGMM:
         self.H = None   # projected target data
         self.Z = None   # predicted labels
 
-    def train(self, Phi, itt=10):
-        # target data (Phi(Xt))
+    def train(self, Phi, Phi_l=None, Y_l=None, itt=10):
+        # -- target data (Phi(Xt))
+
+        # if labelled data, stack with unlabelled
+        if Phi_l is not None:
+            Phi = np.row_stack((Phi, Phi_l))  # stack labelled / unlabelled Phi
+            r_l = np.zeros((Y_l.size, K))    # responsibility 4 labelled data
+            for ii in range(Y_l.size):
+                r_l[ii, Y_l[ii] - 1] = 1     # dirac labels
+
         N, p = Phi.shape  # dims from the kernel
         D = sGMM.base[0].Sig_map.shape[0]  # dims of the source domain
 
-        # A prior: matrix-normal MN(A | M, V, K)
+        # -- the A prior: matrix-normal MN(A | M, V, K)
         # projection matrix:    A = D x p
         # row variance:         V = D x D
         # column variance:      K = p x p
@@ -132,8 +141,14 @@ class DAGMM:
                 plt.plot(e[2][:, 0], e[2][:, 1], 'k', lw=.8)  # map cluster
                 plt.scatter(Xs[Ys == k + 1, 0], Xs[Ys == k + 1, 1],
                             color='k', s=0.5, alpha=0.1)
-                plt.scatter(dagmm.H[Yt == k + 1, 0], dagmm.H[Yt == k + 1, 1],
-                            color=cmap(k), zorder=0)
+                if Phi_l is None:
+                    plt.scatter(self.H[Yt == k + 1, 0], self.H[Yt == k + 1, 1],
+                                color=cmap(k), zorder=0)
+                else:   # when semi-supervised use shuffled plotting labels
+                    plt.scatter(self.H[Y_t == k + 1, 0],
+                                self.H[Y_t == k + 1, 1],
+                                color=cmap(k), zorder=0)
+
             plt.tight_layout()
             plt.show(block=False)
             plt.close()
@@ -158,6 +173,10 @@ class DAGMM:
             res = np.exp(ln_r)  # responsibilities
             # res = resp_gt
 
+            # if labelled data (semi-supervised) update responsibilities
+            if Phi_l is not None:
+                res[-Y_l.size:] = r_l
+
             Nk = res.sum(0)
 
             # variational maximisation step
@@ -180,7 +199,7 @@ class DAGMM:
 
             self.H = Phi @ self.A.T
 
-        self.Z = resp
+        self.Z = res
 
 ##
 
@@ -188,19 +207,28 @@ prior = struct()
 prior.alpha = 1
 prior.gamma = 1e-3
 
-# design matrix
-Phi = np.column_stack([Xt])
 dagmm = DAGMM(sGMM, prior)
 
 # ground truth responsibilities
 resp_gt = np.zeros((Yt.size, K))
 for ii, resp in enumerate(resp_gt):
-    ki = Yt[ii] - 1
-    resp_gt[ii, ki] = 1
+    resp_gt[ii, Yt[ii] - 1] = 1
 
 ##
 
-dagmm.train(Phi, 3)
+# -- unsupervised
+# design matrix
+Phi = np.column_stack([Xt])
+# train supervised
+dagmm.train(Phi, itt=5)
+
+# -- semi-supervised split into labelled and unlabelled
+# Phi = np.column_stack([Xt])
+Phi, Phi_l, Y_ul, Y_l = train_test_split(Phi, Yt, stratify=Yt, test_size=0.5)
+Y_t = np.append(Y_ul, Y_l)      # for plotting
+# train
+dagmm.train(Phi, Phi_l, Y_l, itt=5)
+
 
 print(Ahat)
 print(dagmm.A)
