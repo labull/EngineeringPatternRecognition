@@ -55,22 +55,3 @@ class TCA:
 
         self.Zs_test = self.Z_test[:ns_test, :]  # source part
         self.Zt_test = self.Z_test[ns_test:, :]  # target part
-
-
-class DAGMM:
-    # domain-adapted Gaussian mixture model (DAGMM)
-    def __init__(self, GMM, prior):
-        # no. components
-        self.K = GMM.K
-        # locs
-        self.mu = [GMM.base[k].mu_map for k in range(self.K)]
-        # precision matrices
-        Linv_sig = [np.linalg.inv(np.linalg.cholesky(GMM.base[k].Sig_map))
-                    for k in range(self.K)]
-        self.lam = [Linv_sig[k].T @ Linv_sig[k] for k in range(self.K)]
-        self.Llam = [np.linalg.cholesky(self.lam[k]) for k in range(self.K)]
-        self.log_det_lam = [np.sum(np.log(np.diag(self.Llam[k])))
-                            for k in range(self.K)]  # in fact 1/2 log-det
-
-        # posterior params
-        self.alpha = np.ones(self.K) * prior.alpha

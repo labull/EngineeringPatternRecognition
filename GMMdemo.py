@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import wishart, entropy
 from scipy.stats import multivariate_normal as normal
-# -- EPR
+#
 from EPR.utils import struct, ellipse
 from EPR.density_estimation import NIW, mixture
 
@@ -51,6 +51,7 @@ c = plt.contourf(xx, yy, np.exp(LP), alpha=.7, levels=50, cmap='GnBu_r')
 plt.scatter(samp[:, 0], samp[:, 1], c='k', s=.1, alpha=.8)  # samples
 plt.scatter(X[:, 0], X[:, 1], s=1, alpha=.8)  # training-data
 plt.colorbar(c)
+plt.show()
 
 ##
 # make multi-class data
@@ -91,6 +92,8 @@ Y = np.concatenate(Y)
 # unlabelled
 Xu = np.row_stack(Xu)
 
+plt.show()
+
 ##
 # supervised mixture model
 
@@ -115,6 +118,7 @@ c = plt.contourf(xx, yy, lpxt, alpha=.9, levels=10, cmap='GnBu_r')
 plt.scatter(X[:, 0], X[:, 1], s=1)
 plt.colorbar(c)
 plt.title('supervised')
+plt.show()
 
 ##
 # unsupervised
@@ -134,12 +138,14 @@ c = plt.contourf(xx, yy, lpxt, alpha=.9, levels=10, cmap='GnBu_r')
 plt.scatter(X[:, 0], X[:, 1], s=1)
 plt.colorbar(c)
 plt.title('unsupervised')
+plt.show()
 
 # plot lml
 plt.figure(figsize=[5, 6], dpi=300)
 plt.xlabel('iteration')
 plt.ylabel('log-marginal-likelihood')
 plt.plot(GMM.lml)
+plt.show()
 
 ##
 # semi-supervised
@@ -161,12 +167,14 @@ plt.scatter(X[:, 0], X[:, 1], c=Y, s=1)
 plt.scatter(Xu[:, 0], Xu[:, 1], s=1, c='k', alpha=.6)
 plt.colorbar(c)
 plt.title('semi-supervised')
+plt.show()
 
 # plot joint-ll
 plt.figure(figsize=[5, 6], dpi=300)
 plt.xlabel('iteration')
 plt.ylabel('log-marginal-likelihood')
 plt.plot(GMM.ll)
+plt.show()
 
 ##
 # uncertainty sampling (for active learning)
