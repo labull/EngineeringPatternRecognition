@@ -39,4 +39,16 @@ The second figure can demonstrate improvements in the online `f1`-score for vari
 ![](images/6.7labelled.png)
 
 ### The dangers of active learning: sampling bias
-Importantly, despite empirical improvements shown here and in the literature, selecting training data by a given measure (uncertainty or otherwise) can be worse than random sampling. The assumption of most classifiers is that the training data are representative of the underlying data distribution; this implies that samples are drawn i.i.d from the underlying probability density. However, in active learning, the samples that define the training set are guided; therefore, they are inherently *not* i.i.d. In consequence, care must be taken to ensure that the model does not become unrepresentative: it is critical that any application of active learning should consider the type (complexity) of data that is being analysed, the quantity of data that is available, and the query budget. An example of sampling bias in presented in the [MSSP paper](https://www.sciencedirect.com/science/article/pii/S0888327019305096).
+Importantly, despite empirical improvements shown here and in the 
+literature, selecting training data by a given measure (uncertainty or 
+otherwise) can be worse than random sampling. The assumption of most 
+classifiers is that the training data are representative of the underlying 
+data distribution - this implies that samples are drawn i.i.d from the 
+underlying probability density. However, in active learning, the samples 
+that define the training set are guided, therefore, they are inherently 
+*not* i.i.d. In consequence, care must be taken to ensure that the model 
+does not become unrepresentative. It is critical that any application of 
+active learning should consider the type (complexity) of data that is being 
+analysed, the quantity of data that is available, and the query budget. An 
+example of sampling bias in presented in the 
+[MSSP paper](https://www.sciencedirect.com/science/article/pii/S0888327019305096).

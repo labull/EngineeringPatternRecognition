@@ -20,7 +20,7 @@ This is a work-in-progress.
   * \[Forthcoming\]: Domain Adapted Gaussian Mixture Models (GMMs)
 
 * Partially-supervised learning
-  * [Active learning by uncertainty sampling in Gaussian Mixture Models]() 
+  * [Active learning by uncertainty sampling in Gaussian Mixture Models](https://doi.org/10.1016/j.ymssp.2019.106294) 
     (GMMs)
   * [Semi-supervised learning of mixture models](https://www.morganclaypool.com/doi/pdfplus/10.2200/S00196ED1V01Y200906AIM006?casa_token=0YqCaqxyR1EAAAAA:v8kqB5LBhkclcS30fp0z9DOELXhwlPrqZV2YjJiAK2CuGAPNVoDgId_bODlX6mifibxb1ozTbio) 
   via (MAP) expectation 
