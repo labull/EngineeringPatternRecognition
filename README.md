@@ -13,27 +13,28 @@ This is a work-in-progress.
 ## Algorithms
 
 * Multitask Learning
-    * Hierarchical regression (Stan)
+    * [Hierarchical regression](https://www.taylorfrancis.com/books/mono/10.1201/9780429258411/bayesian-data-analysis-andrew-gelman-john-carlin-hal-stern-donald-rubin) (Stan)
 
 * Domain Adaptation
-  * Transfer Component Analysis (TCA)
+  * [Transfer Component Analysis](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5640675&casa_token=Go7wJy20s-QAAAAA:-LZaw0y0LDV7TFK4ClCSoDbsPWF87A-GD2iklRy3ObjxL7A0lanOe92vM-UCd_WwJY7th6R3-SE) (TCA)
   * \[Forthcoming\]: Domain Adapted Gaussian Mixture Models (GMMs)
 
 * Partially-supervised learning
-  * Active learning by uncertainty sampling in Gaussian Mixture Models 
+  * [Active learning by uncertainty sampling in Gaussian Mixture Models]() 
     (GMMs)
-  * Semi-supervised learning of mixture models via (MAP) expectation 
+  * [Semi-supervised learning of mixture models](https://www.morganclaypool.com/doi/pdfplus/10.2200/S00196ED1V01Y200906AIM006?casa_token=0YqCaqxyR1EAAAAA:v8kqB5LBhkclcS30fp0z9DOELXhwlPrqZV2YjJiAK2CuGAPNVoDgId_bODlX6mifibxb1ozTbio) 
+  via (MAP) expectation 
     maximisation
-  * Hierarchical sampling for active learning (the DH active learner)
+  * [Hierarchical sampling for active learning](https://dl.acm.org/doi/pdf/10.1145/1390156.1390183?casa_token=MaX0vwAsl9kAAAAA:ADzBT6YbRvKUh6DfZOGB1O-eqO8q7v1JLTBLgcN263vjoROp4D6wc3MHkcwxMzX20cgPimPI-Ibx6g)
+   (the DH active learner)
 
 ---
 ## Papers and Notebooks
 
 * \[Forthcoming\]: [Knowledge transfer in engineering fleets: Hierarchical 
-  Bayesian modelling for multitask learning (ArXiv preprint)](link)
-  * Hierarchical linear regression to model engineering populations - 
-    a set of _K_ regression tasks are co-learnt from collected 
-    fleet data.
+  Bayesian modelling for multitask learning (ArXiv, 2022)](link)
+  * Hierarchical regression models of engineering populations, allowing 
+    knowledge transfer between subgroups
   * Applications to truck fleet survival analysis and wind farm power 
     prediction.
   * Jupyter notebook [demo](/Knowledge-transfer-in-engineering-fleets.ipynb) 
