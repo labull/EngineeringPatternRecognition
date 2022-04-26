@@ -74,9 +74,20 @@ This is a work-in-progress.
 ---
 ## Figures
 
+### Multitask learning (MTL)
+
+MTL for transfer learning
+
+![](figures/corr-mdls.png)
+
+Compared to independent models
+
+![](figures/indep-mdls.png)
+
 ### Active learning
 
 ![](figures/uncertainty_sampling.png)
+
 ![](matlab/active_learning_GMM/images/38iisl.gif)
 
 ### Semi-supervised learning
@@ -87,7 +98,7 @@ This is a work-in-progress.
 
 (The blue ellipse shows the prior)
 
-### Transfer learning: TCA domain adaptation
+### TCA domain adaptation (transfer learning)
 
 ![](figures/TCAdemo_pca.png) ![](figures/TCAdemo_tca.png)
 

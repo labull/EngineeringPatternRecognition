@@ -53,10 +53,10 @@ Phi_all = np.column_stack([Xt])       # design matrix
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 [axs[0].scatter(Xs[Ys == k + 1, 0], Xs[Ys == k + 1, 1], color=cmap(k)) for k in
  range(K)]
-axs[0].set_title('$D_s = \{X_s, Y_s\}$')
+axs[0].set_title(r'$D_s = \{X_s, Y_s\}$')
 [axs[1].scatter(Xt[Yt_all == k + 1, 0], Xt[Yt_all == k + 1, 1],
                 color=cmap(k), alpha=.3) for k in range(K)]
-axs[1].set_title('$D_t = \{X_t\}$')
+axs[1].set_title(r'$D_t = \{X_t\}$')
 plt.tight_layout()
 plt.show()
 
@@ -82,10 +82,10 @@ sGMM.train_supervised(Xs, Ys)
 fig, axs = plt.subplots(1, 2, figsize=(10, 5))
 [axs[0].scatter(Xs[Ys == k + 1, 0], Xs[Ys == k + 1, 1], color=cmap(k)) for k in
  range(K)]
-axs[0].set_title('$D_s = \{X_s, Y_s\}$')
+axs[0].set_title(r'$D_s = \{X_s, Y_s\}$')
 [axs[1].scatter(Xt[Yt_all == k + 1, 0], Xt[Yt_all == k + 1, 1],
                 color=cmap(k), alpha=.3) for k in range(K)]
-axs[1].set_title('$D_t = \{X_t\}$')
+axs[1].set_title(r'$D_t = \{X_t\}$')
 
 for k in range(K):
     e = ellipse(sGMM.base[k].mu_map, sGMM.base[k].Sig_map).cov_3

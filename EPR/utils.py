@@ -7,6 +7,7 @@ def chinv(A):
     Linv = np.linalg.inv(L)
     return Linv.T @ Linv
 
+
 def bspline(x, xh, delt):
     # knots
     xh1 = xh + 1 * delt
