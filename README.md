@@ -32,7 +32,7 @@ This is a work-in-progress.
 ## Papers and Notebooks
 
 * \[Forthcoming\]: [Knowledge transfer in engineering fleets: Hierarchical 
-  Bayesian modelling for multitask learning (ArXiv, 2022)](link)
+  Bayesian modelling for multitask learning (ArXiv, 2022)](https://doi.org/10.48550/arXiv.2204.12404)
   * Hierarchical regression models of engineering populations, allowing 
     knowledge transfer between subgroups
   * Applications to truck fleet survival analysis and wind farm power 
@@ -76,7 +76,7 @@ This is a work-in-progress.
 
 ### Multitask learning (MTL)
 
-MTL for transfer learning
+MTL for knowledge transfer between tasks
 
 ![](figures/corr-mdls.png)
 
@@ -96,10 +96,10 @@ Compared to independent models
 
 ![](figures/semi-supervised_learning.png)
 
-(The blue ellipse shows the prior)
+(blue ellipse shows the prior)
 
 ### TCA domain adaptation (transfer learning)
 
 ![](figures/TCAdemo_pca.png) ![](figures/TCAdemo_tca.png)
 
-Archived MATLAB functions/scripts are available in the matlab folder.
+Archived MATLAB functions/scripts are available in the [matlab](/matlab) folder.
