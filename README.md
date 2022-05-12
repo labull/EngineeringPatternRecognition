@@ -37,14 +37,14 @@ This is a work-in-progress.
     knowledge transfer between subgroups
   * Applications to truck fleet survival analysis and wind farm power 
     prediction.
-  * Jupyter notebook [demo](https://github.com/labull/EngineeringPatternRecognition/Knowledge-transfer-in-engineering-fleets.ipynb) 
+  * Jupyter notebook [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/Knowledge-transfer-in-engineering-fleets.ipynb) 
     based on truck-fleet survival analysis.
 
 * [On the transfer of damage detectors between structures: an experimental 
   case study (JSV, 2021)](https://doi.org/10.1016/j.jsv.2021.116072)
   * Domain adaptation to transfer novelty detectors between aircraft 
     tailplane ground-tests.
-  * The [TCA code](https://github.com/labull/EngineeringPatternRecognition/TCAdemo.py) used in the papers.
+  * The [TCA code](https://github.com/labull/EngineeringPatternRecognition/tree/main/TCAdemo.py) used in the papers.
 
 * [Towards semi-supervised and probabilistic classification in structural 
   health monitoring (MSSP, 2020)](https://doi.org/10.1016/j.ymssp.2020.106653)
@@ -52,8 +52,8 @@ This is a work-in-progress.
     applied to Gnat aircraft ground-test data to utilise _both_ labelled 
     and unlabelled data.
   * Jupyter notebook 
-  [demo](https://github.com/labull/EngineeringPatternRecognition/Semi-supervised-and-probabilistic-classification-in-SHM-MSSP2020.ipynb); 
-  MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/matlab/semi_supervised_GMM).
+  [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/Semi-supervised-and-probabilistic-classification-in-SHM-MSSP2020.ipynb); 
+  MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab/semi_supervised_GMM).
 
 * [Probabilistic active learning: An online framework for structural health 
   monitoring (MSSP, 2019)](https://doi.org/10.1016/j.ymssp.2019.106294)
@@ -61,15 +61,15 @@ This is a work-in-progress.
     streams from engineering systems. Applied to bridge, lathe, and
     aircraft monitoring datasets.
   * Jupyter notebook 
-  [demo](https://github.com/labull/EngineeringPatternRecognition/Probabilistic-active-learning-An-online-framework-for-SHM-MSSP2019.ipynb); 
-  MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/matlab/active_learning_GMM).
+  [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/Probabilistic-active-learning-An-online-framework-for-SHM-MSSP2019.ipynb); 
+  MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab/active_learning_GMM).
 
 * [Active learning for semi-supervised structural health monitoring (JSV, 
   2018)](https://doi.org/10.1016/j.jsv.2018.08.040)
   * Hierarchical sampling for active learning (the DH active 
     learner) applied to learn a classifier for ground-test vibration data 
     from a Gnat aircraft.
-  * MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/matlab/cluster_based_active_learning).
+  * MATLAB [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab/cluster_based_active_learning).
 
 ---
 ## Figures
@@ -78,28 +78,28 @@ This is a work-in-progress.
 
 MTL for knowledge transfer between tasks
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/corr-mdls.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/corr-mdls.png)
 
 Compared to independent models
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/indep-mdls.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/indep-mdls.png)
 
 ### Active learning
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/uncertainty_sampling.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/uncertainty_sampling.png)
 
-![](https://github.com/labull/EngineeringPatternRecognition/matlab/active_learning_GMM/images/38iisl.gif)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab/active_learning_GMM/images/38iisl.gif)
 
 ### Semi-supervised learning
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/supervised_learning.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/supervised_learning.png)
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/semi-supervised_learning.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/semi-supervised_learning.png)
 
 (blue ellipse shows the prior)
 
 ### TCA domain adaptation (transfer learning)
 
-![](https://github.com/labull/EngineeringPatternRecognition/figures/TCAdemo_pca.png) ![](https://github.com/labull/EngineeringPatternRecognition/figures/TCAdemo_tca.png)
+![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_pca.png) ![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_tca.png)
 
-Archived MATLAB functions/scripts are available in the [matlab](https://github.com/labull/EngineeringPatternRecognition/matlab) folder.
+Archived MATLAB functions/scripts are available in the [matlab](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab) folder.
