@@ -78,28 +78,28 @@ This is a work-in-progress.
 
 MTL for knowledge transfer between tasks
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/corr-mdls.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/corr-mdls.png)
 
 Compared to independent models
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/indep-mdls.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/indep-mdls.png)
 
 ### Active learning
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/uncertainty_sampling.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/uncertainty_sampling.png)
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab/active_learning_GMM/images/38iisl.gif)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/matlab/active_learning_GMM/images/38iisl.gif)
 
 ### Semi-supervised learning
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/supervised_learning.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/supervised_learning.png)
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/semi-supervised_learning.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/semi-supervised_learning.png)
 
 (blue ellipse shows the prior)
 
 ### TCA domain adaptation (transfer learning)
 
-![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_pca.png) ![](https://github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_tca.png)
+![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_pca.png) ![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_tca.png)
 
 Archived MATLAB functions/scripts are available in the [matlab](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab) folder.
