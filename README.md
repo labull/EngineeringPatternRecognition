@@ -78,28 +78,28 @@ This is a work-in-progress.
 
 MTL for knowledge transfer between tasks
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/corr-mdls.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/corr-mdls.png)
 
 Compared to independent models
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/indep-mdls.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/indep-mdls.png)
 
 ### Active learning
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/uncertainty_sampling.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/uncertainty_sampling.png)
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/matlab/active_learning_GMM/images/38iisl.gif)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/matlab/active_learning_GMM/images/38iisl.gif)
 
 ### Semi-supervised learning
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/supervised_learning.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/supervised_learning.png)
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/semi-supervised_learning.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/semi-supervised_learning.png)
 
 (blue ellipse shows the prior)
 
 ### TCA domain adaptation (transfer learning)
 
-![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_pca.png) ![](https://raw.github.com/labull/EngineeringPatternRecognition/tree/main/figures/TCAdemo_tca.png)
+![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/TCAdemo_pca.png) ![](https://raw.githubusercontent.com/labull/EngineeringPatternRecognition/main/figures/TCAdemo_tca.png)
 
 Archived MATLAB functions/scripts are available in the [matlab](https://github.com/labull/EngineeringPatternRecognition/tree/main/matlab) folder.
