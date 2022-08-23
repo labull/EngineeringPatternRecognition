@@ -5,7 +5,7 @@
 
 # pycharm
 /.idea
-__pycache__/
+**/__pycache__/
 
 # stan
 *.hpp
