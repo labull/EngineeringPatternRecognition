@@ -1,14 +1,14 @@
 # jupyter
 *~
-.ipynb_checkpoints
+*.ipynb_checkpoints
 .DS_Store
 
 # pycharm
-.idea/
-__pycache__/
+/.idea
+/__pycache__
 
 # stan
-.hpp
+*.hpp
 
 # extensionless
 *
