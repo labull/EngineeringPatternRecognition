@@ -17,7 +17,6 @@ This is a work-in-progress.
 
 * Domain Adaptation
   * [Transfer Component Analysis](https://ieeexplore.ieee.org/stamp/stamp.jsp?arnumber=5640675&casa_token=Go7wJy20s-QAAAAA:-LZaw0y0LDV7TFK4ClCSoDbsPWF87A-GD2iklRy3ObjxL7A0lanOe92vM-UCd_WwJY7th6R3-SE) (TCA)
-  * \[Forthcoming\]: Domain Adapted Gaussian Mixture Models (GMMs)
 
 * Partially-supervised learning
   * [Active learning by uncertainty sampling in Gaussian Mixture Models](https://doi.org/10.1016/j.ymssp.2019.106294) 
@@ -31,8 +30,7 @@ This is a work-in-progress.
 ---
 ## Papers and Notebooks
 
-* \[Forthcoming\]: [Knowledge transfer in engineering fleets: Hierarchical 
-  Bayesian modelling for multitask learning (ArXiv, 2022)](https://doi.org/10.48550/arXiv.2204.12404)
+* [Hierarchical Bayesian modelling for knowledge transfer across engineering fleets via multitask learning (CACAIE, 2022)](https://doi.org/10.1111/mice.12901)
   * Hierarchical regression models of engineering populations, allowing 
     knowledge transfer between subgroups
   * Applications to truck fleet survival analysis and wind farm power 

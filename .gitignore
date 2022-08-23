@@ -7,6 +7,9 @@
 .idea/
 __pycache__/
 
+# stan
+.hpp
+
 # extensionless
 *
 !/**/
