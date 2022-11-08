@@ -1,5 +1,5 @@
 import numpy as np
-
+import time
 
 def chinv(A):
     # Cholesky inverse
@@ -104,3 +104,31 @@ class struct(dict):
     def __delitem__(self, key):
         super(struct, self).__delitem__(key)
         del self.__dict__[key]
+
+
+class tic:
+    def __init__(self):
+        self.t = time.time()
+    def toc(self):
+        seconds = time.time() - self.t
+        m, s = divmod(seconds, 60)
+        h, m = divmod(m, 60)
+        print('time: ' + '%d : %d : %d' % (h, m, s))
+
+
+def plotSTD(ax, x, y_hat, y_std, devs=3, c='k', a=.1, lw=1):
+    ii = np.argsort(x)
+    ax.plot(x[ii], y_hat[ii], c=c, lw=lw)
+    ax.fill_between(x[ii], y_hat[ii] + devs*y_std[ii], y_hat[ii] - devs*y_std[ii],
+                    alpha=a, color=c, lw=0, zorder=0)
+    
+    
+def plotF(ax, x, f, thin=10, c='k', a=.1, lw=1):
+    '''
+    plot samples of functions
+    '''
+    # thin out f samps
+    y = f[1::thin]
+    ns = y.shape[0]
+    x = np.tile(x, (ns, 1))
+    ax.plot(x.T, y.T, c=c, lw=lw, alpha=a, zorder=0)
