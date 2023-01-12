@@ -123,12 +123,17 @@ def plotSTD(ax, x, y_hat, y_std, devs=3, c='k', a=.1, lw=1):
                     alpha=a, color=c, lw=0, zorder=0)
     
     
-def plotF(ax, x, f, thin=10, c='k', a=.1, lw=1):
+def plotF(ax, x, f, ss=50, c='k', a=.1, lw=1, thin=None):
     '''
     plot samples of functions
     '''
-    # thin out f samps
-    y = f[1::thin]
+    if thin is None:
+        # sub sample
+        n = f.shape[0]
+        y = f[np.random.permutation(n)[:ss]]
+    elif thin is not None:
+        # thin out f samps
+        y = f[1::thin]
     ns = y.shape[0]
     x = np.tile(x, (ns, 1))
     ax.plot(x.T, y.T, c=c, lw=lw, alpha=a, zorder=0)
