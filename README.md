@@ -1,4 +1,4 @@
-# Engineering Pattern Recognition
+# `EPR`
 
 Code to reproduce paper results (or as close as possible, depending on 
 data-availability). Each publication has a Jupyter notebook.
