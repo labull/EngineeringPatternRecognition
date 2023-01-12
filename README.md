@@ -11,7 +11,7 @@ demonstrate the _EPR_ module.
 
 * [Hierarchical Bayesian modelling for knowledge transfer across engineering fleets via multitask learning (CACAIE, 2022)](https://doi.org/10.1111/mice.12901)
   * Hierarchical regression models of engineering populations, allowing 
-    knowledge transfer between subgroups
+    knowledge transfer between subgroups.
   * Applications to truck fleet survival analysis and wind farm power 
     prediction.
   * Jupyter notebook [demo](https://github.com/labull/EngineeringPatternRecognition/tree/main/Knowledge-transfer-in-engineering-fleets.ipynb) 
