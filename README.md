@@ -1,4 +1,4 @@
-# `EPR`
+# [`EPR`](https://github.com/labull/EngineeringPatternRecognition)
 
 Code to reproduce paper results (or as close as possible, depending on 
 data-availability). Each publication has a Jupyter notebook.
