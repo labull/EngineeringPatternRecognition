@@ -1,9 +1,9 @@
 import numpy as np
 import time
 
-def chinv(A):
+def chinv(A, jit=1e-6):
     # Cholesky inverse
-    L = np.linalg.cholesky(A)
+    L = np.linalg.cholesky(A + np.eye(A.shape[0])*jit)
     Linv = np.linalg.inv(L)
     return Linv.T @ Linv
 
@@ -118,10 +118,12 @@ class tic:
 
 def plotSTD(ax, x, y_hat, y_std, devs=3, c='k', a=.1, lw=1):
     ii = np.argsort(x)
+    if y_std.size == 1:
+        y_std = np.ones_like(y_hat)*y_std
     ax.plot(x[ii], y_hat[ii], c=c, lw=lw)
     ax.fill_between(x[ii], y_hat[ii] + devs*y_std[ii], y_hat[ii] - devs*y_std[ii],
                     alpha=a, color=c, lw=0, zorder=0)
-    
+   
     
 def plotF(ax, x, f, ss=50, c='k', a=.1, lw=1, thin=None):
     '''
