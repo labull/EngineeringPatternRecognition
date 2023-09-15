@@ -4,6 +4,11 @@ from jax import random
 from tqdm import trange
 import matplotlib.pyplot as plt
 
+'''
+basic GP building blocks in jax
+TODO: OO wrappers (maybe), improve hyps object
+'''
+
 @jit
 def kernelSE(x1, x2, hyps):
     '''
@@ -28,6 +33,29 @@ def kernelSE(x1, x2, hyps):
     # compute kerel matrix
     K = alpha * jnp.exp(-.5 * r2 / (l**2))
     
+    return K
+
+@jit
+def kernelPoly(x1, x2, hyps):
+    '''
+    polynomial kernel (linear when p=1)
+    (x1•x2' + a) ^ p
+    '''
+    # reshape so at least 2d (for 1d inputs)
+    x1 = jnp.atleast_2d(x1).T
+    x2 = jnp.atleast_2d(x2).T
+    
+    # check hyps from dict
+    if 'c' in hyps and 'p' in hyps:
+        c = hyps['c']
+        p = hyps['p']
+    else:
+        raise Exception('hyps dict needs process '
+                        'constant [c] polynomial order [p]')
+    
+    # compute kerel matrix
+    K = (jnp.dot(x1, x2.T) + c) ** p
+           
     return K
 
 @jit
@@ -96,7 +124,7 @@ def predict(xp, x, y, kernel, mean, hyps, jitter=1e-6):
     
 
 def MLtypeII(x, y, kernel, mean, init_hyps,
-             steps=100, learning_rate=1e-5, plotter=True):
+             steps=100, learning_rate=1e-5, jitter=1e-6, plotter=True):
     '''
     maximum likelihood type-II by gradient ascent
     '''
@@ -108,7 +136,7 @@ def MLtypeII(x, y, kernel, mean, init_hyps,
     def objective(hyp_vals, x, y):
         # back into dict
         hyps = dict(zip(hyp_keys, hyp_vals))
-        return log_marginal_likelihood(x, y, kernel, mean, hyps)
+        return log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=jitter)
     
     # @jit
     # def update(hyp_vals, x, y, lr=learning_rate):

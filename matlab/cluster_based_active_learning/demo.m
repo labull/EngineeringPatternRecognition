@@ -31,7 +31,7 @@ train_idx = xl(:, 1);
 x_train  = X(train_idx, :);
 y_train = xl(:, 2);
 
-% --------- CLASSIFICATION -- train/predict with niave bayes classification
+% --------- CLASSIFICATION -- train/predict with naive bayes classification
 y_pred = NB(x_train, y_train, x_test);
 % calculate classification accuracy
 acc = sum(y_pred == y_test)/length(y_test);
@@ -60,7 +60,7 @@ legend()
 train_idx = randperm(size(X,1), n);
 x_train = X(train_idx, :);
 y_train = Y(train_idx);
-% train/predict with niave bayes classification
+% train/predict with naive bayes classification
 y_pred = NB(x_train, y_train, x_test);
 % calculate classification accuracy
 acc = sum(y_pred == y_test)/length(y_test);
