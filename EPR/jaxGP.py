@@ -3,6 +3,7 @@ from jax import grad, jit, vmap, value_and_grad
 from jax import random
 from tqdm import trange
 import matplotlib.pyplot as plt
+import numpy as np
 
 '''
 basic GP building blocks in jax
@@ -36,23 +37,21 @@ def kernelSE(x1, x2, hyps):
     return K
 
 @jit
-def kernelPoly(x1, x2, hyps):
+def kernelPoly(x1, x2, hyps, p=2):
     '''
     polynomial kernel (linear when p=1)
-    (x1•x2' + a) ^ p
+    (x1•x2' + c) ^ p
     '''
     # reshape so at least 2d (for 1d inputs)
     x1 = jnp.atleast_2d(x1).T
     x2 = jnp.atleast_2d(x2).T
     
     # check hyps from dict
-    if 'c' in hyps and 'p' in hyps:
+    if 'c' in hyps:
         c = hyps['c']
-        p = hyps['p']
     else:
-        raise Exception('hyps dict needs process '
-                        'constant [c] polynomial order [p]')
-    
+        raise Exception('hyps dict needs '
+                        'constant [c]')
     # compute kerel matrix
     K = (jnp.dot(x1, x2.T) + c) ** p
            
@@ -66,7 +65,7 @@ def zero_mean(x):
     return jnp.zeros(x.shape[0])
 
 
-def log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=1e-6):
+def log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=1e-3):
     '''
     log marginal likelihood
     '''
@@ -138,51 +137,31 @@ def MLtypeII(x, y, kernel, mean, init_hyps,
         hyps = dict(zip(hyp_keys, hyp_vals))
         return log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=jitter)
     
-    # @jit
-    # def update(hyp_vals, x, y, lr=learning_rate):
-    #     # gradient ascent (check for better) **
-    #     return hyp_vals + lr * grad(objective)(hyp_vals, x, y, hyp_keys)
     @jit
-    def update(hyp_vals, x, y, state, 
-               lr=learning_rate, beta1=0.9, beta2=0.999, epsilon=1e-8):
-        '''
-        adam optimizer implementation
-        
-        state: state variables for Adam (initialized with zeros).
-        beta1: exponential decay rate for the first moment estimates.
-        beta2: exponential decay rate for the second moment estimates.
-        epsilon: jitter to prevent division by zero.
-        '''
-        
-        t = state['t'] + 1
-        t_coef = jnp.sqrt(1.0 - beta2 ** t) / (1.0 - beta1 ** t)
-        
-        obj_val, grad = value_and_grad(objective)(hyp_vals, x, y)
+    def update(hyp_vals, x, y, lr=learning_rate, batch_size=50):
+        # gradient ascent
+        idx = np.random.choice(len(x), batch_size, replace=False)
+        obj_val, grad = value_and_grad(objective)(hyp_vals, x[idx], y[idx])
+        hyp_vals = hyp_vals + lr * grad
+        hyp_vals = jnp.where(hyp_vals < 0, 1e-6, hyp_vals)
+        return hyp_vals, obj_val
 
-        m = beta1 * state['m'] + (1.0 - beta1) * grad
-        v = beta2 * state['v'] + (1.0 - beta2) * (grad ** 2)
-
-        hyp_vals = hyp_vals + lr * t_coef * m / (jnp.sqrt(v) + epsilon)
-
-        state = {'t': t, 'm': m, 'v': v}
-
-        return hyp_vals, state, obj_val
-    
-    # init adam states
-    state = {'t': 0, 'm': jnp.zeros_like(hyp_vals), 'v': jnp.zeros_like(hyp_vals)}
     # trace objective
     obj_trace = []
     for _ in trange(steps, ncols=60):
-        # hyp_vals = update(hyp_vals, x, y)
-        hyp_vals, state, obj_val = update(hyp_vals, x, y, state)
+        hyp_vals_plus1, obj_val = update(hyp_vals, x, y)
+        # hyp_vals_plus1, state, obj_val = update(hyp_vals, x, y, state)
         if jnp.isnan(obj_val):
-            raise Exception('objective is NaN')
+            # raise Exception('objective is NaN')
+            print('had to stop early - objective is NaN')
+            break
         else:
+            hyp_vals = hyp_vals_plus1
             obj_trace.append(obj_val)
         
             
     res = dict(zip(hyp_keys, hyp_vals))
-    res['trace'] = obj_trace    # also return trace
+    # res['trace'] = obj_trace    # also return trace
     
     if plotter == True:
         # plot trace of objective

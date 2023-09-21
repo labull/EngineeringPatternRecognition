@@ -116,11 +116,11 @@ class tic:
         print('time: ' + '%d : %d : %d' % (h, m, s))
 
 
-def plotSTD(ax, x, y_hat, y_std, devs=3, c='k', a=.1, lw=1):
+def plotSTD(ax, x, y_hat, y_std, devs=3, c='k', a=.1, lw=1, label=None):
     ii = np.argsort(x)
     if y_std.size == 1:
         y_std = np.ones_like(y_hat)*y_std
-    ax.plot(x[ii], y_hat[ii], c=c, lw=lw)
+    ax.plot(x[ii], y_hat[ii], c=c, lw=lw, label=label)
     ax.fill_between(x[ii], y_hat[ii] + devs*y_std[ii], y_hat[ii] - devs*y_std[ii],
                     alpha=a, color=c, lw=0, zorder=0)
    
