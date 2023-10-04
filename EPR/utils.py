@@ -1,5 +1,10 @@
 import numpy as np
 import time
+# file printing
+from IPython.display import display, HTML
+from pygments import highlight
+from pygments.lexers import get_lexer_for_filename
+from pygments.formatters import HtmlFormatter
 
 def chinv(A, jit=1e-6):
     # Cholesky inverse
@@ -34,10 +39,16 @@ def bspline(x, xh, delt):
     return np.array(bs)
 
 
-def uniBspline(xx, H):
-    # list of uniform B-splines over range xx
-    delta = (xx.max() - xx.min()) / (H - 1)
-    xhh = np.arange(xx.min() - (delta * 2), xx.max(), delta)[:-1]
+def uniBspline(xx, H, compact=False):
+    # list of uniform B-splines over range [xx]
+    if compact == False:
+        # hold-on extrapolation
+        delta = (xx.max() - xx.min()) / (H - 1)
+        xhh = np.arange(xx.min() - (delta * 2), xx.max(), delta)[:-1]
+    elif compact == True:
+        # extrapolation to zero
+        delta = (xx.max() - xx.min()) / (4 + (H-1))
+        xhh = np.arange(xx.min(), xx.max(), delta)[:H]
     # functions
     splines = [lambda x, xh=xh: bspline(x, xh, delta) for xh in xhh]
     return splines
@@ -139,3 +150,18 @@ def plotF(ax, x, f, ss=50, c='k', a=.1, lw=1, thin=None):
     ns = y.shape[0]
     x = np.tile(x, (ns, 1))
     ax.plot(x.T, y.T, c=c, lw=lw, alpha=a, zorder=0)
+
+
+def fprint(file_path):
+    '''
+    printing files... (stan files)
+    '''
+    try:
+        with open(file_path, 'r') as file:
+            code = file.read()
+            lexer = get_lexer_for_filename(file_path) 
+            formatter = HtmlFormatter(style='colorful', noclasses=True)
+            highlighted_code = highlight(code, lexer, formatter)
+            display(HTML(highlighted_code))
+    except Exception as e:
+        print(f"Error: {e}")
