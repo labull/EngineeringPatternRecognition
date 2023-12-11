@@ -1,9 +1,11 @@
 import numpy as np
 import time
+import matplotlib.pyplot as plt
 # file printing
 from IPython.display import display, HTML
+import inspect
 from pygments import highlight
-from pygments.lexers import get_lexer_for_filename
+from pygments.lexers import get_lexer_for_filename, PythonLexer
 from pygments.formatters import HtmlFormatter
 
 def chinv(A, jit=1e-6):
@@ -165,3 +167,74 @@ def fprint(file_path):
             display(HTML(highlighted_code))
     except Exception as e:
         print(f"Error: {e}")
+        
+
+def funprint(python_function):
+    '''
+    printing python functions
+    '''
+    source_code = inspect.getsource(python_function)
+    highlighted_code = highlight(source_code,
+                                 PythonLexer(), HtmlFormatter())
+    display(HTML(highlighted_code))
+
+        
+def Nhistbin(y):
+    '''
+    freedman-diaconis rule (for hist bin number)
+    '''
+    if y.size == 0:
+        bin_count = 0
+    else:
+        q1 = np.quantile(y, 0.25)
+        q3 = np.quantile(y, 0.75)
+        iqr = q3 - q1
+        bin_width = (2 * iqr) / (y.shape[0] ** (1 / 3))
+        bin_count = int(np.ceil((y.max() - y.min()) / bin_width))
+    return bin_count
+
+
+def plot_dist(ax, x, colour='teal', ground_truth=None):
+    '''
+    bin-type plotter for distributions
+    '''
+    ax.hist(x, bins=Nhistbin(x), color=colour,
+             alpha=0.6, density=True, rwidth=.8)
+    
+    if ground_truth is not None:
+        ax.plot(ground_truth, 0, 'k^', ms=15, alpha=.8,
+                label='ground truth')
+
+    
+def auto_corr(ax, trace, lags=60):
+    '''
+    autocorrelation for mcmc chains [a FCiML]
+    '''
+    auto_corr = np.ones(lags)
+    diff = trace - trace.mean()
+    
+    for k in range(1, lags):
+        auto_corr[k] = (1 / ((trace.shape[0]-k) * trace.var()) 
+                        * diff[:-k].T @ diff[k:]).flatten()
+    ax.bar(range(lags), auto_corr,
+            color='gray', alpha=.6, width=.5)
+    ax.set_xlabel('lags'); ax.set_ylabel('auto corr')
+
+
+def plot_trace(trace, names=None):
+    '''
+    trace plot, one chain
+    '''
+    D = trace.shape[1] # no of parameters (cols)
+    for d in range(D):
+        _, ax = plt.subplots(2)
+        # trace plot
+        ax[0].plot(trace[:, d], color='teal')
+        if names is not None:
+            ax[0].set_ylabel(names[d])
+        ax[0].set_xlabel('samples')
+        # autocorrelation
+        auto_corr(ax[1], trace[:, d])
+        plt.tight_layout()
+        plt.show()
+

@@ -1,6 +1,5 @@
 import jax.numpy as jnp
-from jax import grad, jit, vmap, value_and_grad
-from jax import random
+from jax import jit, value_and_grad
 from tqdm import trange
 import matplotlib.pyplot as plt
 import numpy as np
