@@ -45,11 +45,12 @@ def uniBspline(xx, H, compact=False):
     # list of uniform B-splines over range [xx]
     if compact == False:
         # hold-on extrapolation
+        # delta = (xx.max() - xx.min()) / (H - 3)
         delta = (xx.max() - xx.min()) / (H - 1)
         xhh = np.arange(xx.min() - (delta * 2), xx.max(), delta)[:-1]
     elif compact == True:
         # extrapolation to zero
-        delta = (xx.max() - xx.min()) / (4 + (H-1))
+        delta = (xx.max() - xx.min()) / (H + 3)
         xhh = np.arange(xx.min(), xx.max(), delta)[:H]
     # functions
     splines = [lambda x, xh=xh: bspline(x, xh, delta) for xh in xhh]
@@ -62,6 +63,7 @@ class ellipse:
         theta = np.linspace(0, np.pi * 2, points)
         val, vec = np.linalg.eig(cov)
         a = np.arctan(vec[1, 0] / vec[0, 0])    # angle of fist eigenvector
+        self.angle_of_rotation = a
         # std_dev ellipses
         self.cov_3 = []
         for j in range(3):

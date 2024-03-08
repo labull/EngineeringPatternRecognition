@@ -1,8 +1,9 @@
 import jax.numpy as jnp
-from jax import jit, value_and_grad
+from jax import jit, grad
 from tqdm import trange
 import matplotlib.pyplot as plt
 import numpy as np
+import optax
 
 '''
 basic GP building blocks in jax
@@ -57,19 +58,20 @@ def kernelPoly(x1, x2, hyps, p=2):
     return K
 
 @jit
-def zero_mean(x):
+def zero_mean(x, hyps):
     '''
     zero mean function
     '''
     return jnp.zeros(x.shape[0])
 
 
-def log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=1e-3):
+def log_marginal_likelihood(x, y, kernel, mean, hyps, 
+                            jitter=1e-3):
     '''
     log marginal likelihood
     '''
     # mean & kernel func of training data
-    mx = mean(x)
+    mx = mean(x, hyps)
     Kxx = kernel(x, x, hyps)
     
     # without observation noise? just add jitter
@@ -77,7 +79,8 @@ def log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=1e-3):
         sigI = jitter * jnp.eye(Kxx.shape[0])
     # else add observation noise kernel
     else:
-        sigI = hyps['sigma']**2 * jnp.eye(Kxx.shape[0]) + jitter * jnp.eye(Kxx.shape[0])
+        sigI = hyps['sigma']**2 * (jnp.eye(Kxx.shape[0]) 
+                                   + jitter * jnp.eye(Kxx.shape[0]))
     
     L = jnp.linalg.cholesky(Kxx + sigI)
     a = jnp.linalg.solve(L.T, jnp.linalg.solve(L, (y - mx)))
@@ -94,10 +97,10 @@ def predict(xp, x, y, kernel, mean, hyps, jitter=1e-6):
     GP predict
     '''
     # mean & kernel funcs
-    mx = mean(x)
+    mx = mean(x, hyps)
     Kxx = kernel(x, x, hyps)
     
-    mxp = mean(xp)
+    mxp = mean(xp, hyps)
     Kpx = kernel(xp, x, hyps)
     Kpp = kernel(xp, xp, hyps)
     
@@ -118,55 +121,43 @@ def predict(xp, x, y, kernel, mean, hyps, jitter=1e-6):
     f_var = Kpp - jnp.matmul(v.T, v)
     y_var = jnp.diag(f_var) + sigIp
     
-    return f_mu, jnp.sqrt(f_var), jnp.sqrt(y_var)
+    return f_mu, np.sqrt(np.diag(f_var)), np.sqrt(y_var)
     
 
 def MLtypeII(x, y, kernel, mean, init_hyps,
-             steps=100, learning_rate=1e-5, jitter=1e-6, plotter=True):
+             steps=100, learning_rate=1e-5, batch=50,
+             jitter=1e-6, plotter=True):
     '''
     maximum likelihood type-II by gradient ascent
     '''
-    # convert to list to use arg nums for autodiff
-    hyp_keys = init_hyps.keys()
-    hyp_vals = jnp.array(list(init_hyps.values()))
     
     @jit
-    def objective(hyp_vals, x, y):
-        # back into dict
-        hyps = dict(zip(hyp_keys, hyp_vals))
-        return log_marginal_likelihood(x, y, kernel, mean, hyps, jitter=jitter)
+    def objective(hyps, x, y):
+        return - log_marginal_likelihood(x, y, kernel, mean, hyps,
+                                         jitter=jitter)
     
-    @jit
-    def update(hyp_vals, x, y, lr=learning_rate, batch_size=50):
-        # gradient ascent
-        idx = np.random.choice(len(x), batch_size, replace=False)
-        obj_val, grad = value_and_grad(objective)(hyp_vals, x[idx], y[idx])
-        hyp_vals = hyp_vals + lr * grad
-        hyp_vals = jnp.where(hyp_vals < 0, 1e-6, hyp_vals)
-        return hyp_vals, obj_val
-
-    # trace objective
+    grad_lml = grad(objective)
+    hyps = init_hyps
+    optimiser = optax.adam(learning_rate=learning_rate)
+    opt_state = optimiser.init(hyps)
+    
     obj_trace = []
     for _ in trange(steps, ncols=60):
-        hyp_vals_plus1, obj_val = update(hyp_vals, x, y)
-        # hyp_vals_plus1, state, obj_val = update(hyp_vals, x, y, state)
-        if jnp.isnan(obj_val):
-            # raise Exception('objective is NaN')
-            print('had to stop early - objective is NaN')
-            break
-        else:
-            hyp_vals = hyp_vals_plus1
-            obj_trace.append(obj_val)
-        
+        idx = np.random.choice(len(x), batch, replace=False)
+        grads = grad_lml(hyps, x[idx], y[idx])
+        updates, opt_state = optimiser.update(grads, opt_state)
+        hyps = optax.apply_updates(hyps, updates)
+        obj_trace.append(objective(hyps, x, y))
             
-    res = dict(zip(hyp_keys, hyp_vals))
-    # res['trace'] = obj_trace    # also return trace
+    # res = dict(zip(hyp_keys, hyp_vals))
+    res = hyps.copy()
+    res['trace'] = - np.array(obj_trace)    # also return trace
     
     if plotter == True:
-        # plot trace of objective
-        plt.plot(obj_trace)
+        # plot trace of objective [neg since -lml]
+        plt.plot(res['trace'])
         plt.ylabel('lml'); plt.xlabel('iteration')
         plt.show()
     
-    return res
+    return hyps #, res
 
